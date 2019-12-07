@@ -18,7 +18,9 @@ def get_solution(filename):
     with open(filename) as file:
         for line in file:
             mass = int(line)
+            # part 1
             non_recursive_sum += get_fuel(mass)
+            # part 2
             recursive_sum += get_recursive_fuel(mass)
     return non_recursive_sum, recursive_sum
 
