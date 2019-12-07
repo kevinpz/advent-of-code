@@ -2,11 +2,11 @@ from itertools import groupby
 
 
 def check_valid(nb, size_limit):
-    str_nb = list(str(nb))
-    if sorted(str_nb) != str_nb:
+    list_nb = list(str(nb))
+    if sorted(list_nb) != list_nb:
         return False
 
-    for _, count in groupby(str_nb):
+    for _, count in groupby(list_nb):
         size = len(list(count))
         if size_limit == 0 and size > 1:
             return True
