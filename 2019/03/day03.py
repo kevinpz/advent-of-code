@@ -1,50 +1,35 @@
 def get_points(wire):
-    pos_x = 0
-    pos_y = 0
+    # x, y, step
+    pos = [0, 0]
     step = 1
 
-    dir_def = {"R": (1, 0), "L": (-1, 0), "U": (0, 1), "D": (0, -1)}
+    # Great idea to optimize code from Ali Spittel
+    # https://github.com/aspittel/advent-of-code/blob/master/2019/dec-03/script.py#L4
+    dir_def = {"R": [0, 1], "L": [0, -1], "U": [1, 1], "D": [1, -1]}
 
     points = {}
     for move in wire.split(","):
-        direction = move[0]
-        dist = int(move[1:])
-        x, y = dir_def[direction]
+        direction, dist = move[0], int(move[1:])
+        idx, add = dir_def[direction]
         for _ in range(dist):
-            pos_x += x
-            pos_y += y
-            points[(pos_x, pos_y)] = step
+            pos[idx] += add
+            points[tuple(pos)] = step
             step += 1
 
     return points
 
 
-def find_intersections(points1, points2):
-    return set(points1.keys()).intersection(set(points2.keys()))
-
-
-def get_distances(points):
-    return [abs(x) + abs(y) for x, y in points]
-
-
-def get_delay(points1, points2, intersections):
-    return [points1[p] + points2[p] for p in intersections]
-
-
 def get_solution(filename):
     with open(filename) as file:
-        wire1 = file.readline()
-        wire2 = file.readline()
+        points1 = get_points(file.readline())
+        points2 = get_points(file.readline())
 
-        points1 = get_points(wire1)
-        points2 = get_points(wire2)
+        intersections = [[p, points1[p], points2[p]] for p in points1 if p in points2]
 
-        intersections = find_intersections(points1, points2)
+        res_p1 = min(intersections, key=lambda p: abs(p[0][0]) + abs(p[0][1]))
+        res_p2 = min(intersections, key=lambda p: p[1] + p[2])
 
-        res_p1 = min(get_distances(intersections))
-        res_p2 = min(get_delay(points1, points2, intersections))
-
-    return res_p1, res_p2
+    return abs(res_p1[0][0]) + abs(res_p1[0][1]), res_p2[1] + res_p2[2]
 
 
 if __name__ == "__main__":

@@ -1,11 +1,11 @@
-def get_fuel(mass):
+def find_simple_fuel(mass):
     return mass // 3 - 2
 
 
-def get_recursive_fuel(mass):
+def find_complex_fuel(mass):
     current_fuel = 0
     while mass > 0:
-        mass = get_fuel(mass)
+        mass = find_simple_fuel(mass)
         if mass > 0:
             current_fuel += mass
     current_fuel -= mass
@@ -13,16 +13,16 @@ def get_recursive_fuel(mass):
 
 
 def get_solution(filename):
-    non_recursive_sum = 0
-    recursive_sum = 0
+    simple_fuel = 0
+    complex_fuel = 0
     with open(filename) as file:
         for line in file:
             mass = int(line)
             # part 1
-            non_recursive_sum += get_fuel(mass)
+            simple_fuel += find_simple_fuel(mass)
             # part 2
-            recursive_sum += get_recursive_fuel(mass)
-    return non_recursive_sum, recursive_sum
+            complex_fuel += find_complex_fuel(mass)
+    return simple_fuel, complex_fuel
 
 
 if __name__ == "__main__":
