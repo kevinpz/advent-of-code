@@ -24,12 +24,12 @@ def get_solution(filename):
         points1 = get_points(file.readline())
         points2 = get_points(file.readline())
 
-        intersections = [[p, points1[p], points2[p]] for p in points1 if p in points2]
+        res = [[abs(p[0]) + abs(p[1]), points1[p] + points2[p]] for p in points1 if p in points2]
 
-        res_p1 = min(intersections, key=lambda p: abs(p[0][0]) + abs(p[0][1]))
-        res_p2 = min(intersections, key=lambda p: p[1] + p[2])
+        res_p1 = min(res, key=lambda p: p[0])[0]
+        res_p2 = min(res, key=lambda p: p[1])[1]
 
-    return abs(res_p1[0][0]) + abs(res_p1[0][1]), res_p2[1] + res_p2[2]
+    return res_p1, res_p2
 
 
 if __name__ == "__main__":
