@@ -26,6 +26,6 @@ def get_solution(filename):
 
 
 if __name__ == "__main__":
-    nr_sum, r_sum = get_solution("input.txt")
+    nr_sum, r_sum = get_solution("day01_input.txt")
     print(f"Part 1: {nr_sum}")
     print(f"Part 2: {r_sum}")

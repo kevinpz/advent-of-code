@@ -33,6 +33,6 @@ def get_solution(filename):
 
 
 if __name__ == "__main__":
-    sol_p1, sol_p2 = get_solution("input.txt")
+    sol_p1, sol_p2 = get_solution("day03_input.txt")
     print(f"Part 1: {sol_p1}")
     print(f"Part 2: {sol_p2}")
