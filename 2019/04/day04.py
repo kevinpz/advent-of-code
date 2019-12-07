@@ -1,26 +1,19 @@
+from itertools import groupby
+
+
 def check_valid(nb, size_limit):
-    nb_list = [int(n) for n in str(nb)]
+    str_nb = list(str(nb))
+    if sorted(str_nb) != str_nb:
+        return False
 
-    adjacent = False
-    count = 1
-    for idx in range(0, len(nb_list) - 1):
-        nb, next_nb = nb_list[idx], nb_list[idx + 1]
-        if nb > next_nb:
-            return False
+    for _, count in groupby(str_nb):
+        size = len(list(count))
+        if size_limit == 0 and size > 1:
+            return True
+        elif size == size_limit:
+            return True
 
-        if nb == next_nb:
-            if size_limit == 0:
-                adjacent = True
-            count += 1
-        else:
-            if count == size_limit:
-                adjacent = True
-            count = 1
-
-    if count == size_limit:
-        adjacent = True
-
-    return adjacent
+    return False
 
 
 def get_solution(filename):
@@ -37,6 +30,7 @@ def get_solution(filename):
 
 
 if __name__ == "__main__":
+    check_valid(12345, 0)
     sol_p1, sol_p2 = get_solution("day04_input.txt")
     print(f"Part 1: {sol_p1}")
     print(f"Part 2: {sol_p2}")
