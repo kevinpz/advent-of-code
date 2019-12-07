@@ -16,20 +16,20 @@ def restore_program(noun, verb, values):
 
 def get_solution(filename):
     with open(filename) as file:
-        for line in file:
-            values = [int(nb) for nb in line.split(",")]
+        line = file.readline()
+        values = [int(nb) for nb in line.split(",")]
 
-            # part 1
-            res_p1 = restore_program(12, 2, values[:])
+        # part 1
+        res_p1 = restore_program(12, 2, values[:])
 
-            # part 2
-            desired_output = 19690720
-            for n in range(100):
-                for v in range(100):
-                    res = restore_program(n, v, values[:])
-                    if res == desired_output:
-                        res_p2 = 100 * n + v
-                        break
+        # part 2
+        desired_output = 19690720
+        for n in range(100):
+            for v in range(100):
+                res = restore_program(n, v, values[:])
+                if res == desired_output:
+                    res_p2 = 100 * n + v
+                    break
     return res_p1, res_p2
 
 
