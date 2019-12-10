@@ -1,15 +1,14 @@
 def get_all_orbits(orbit_map):
-    next_orbit = [["COM", 0]]
-    orbit_size = 0
+    next_orbit = [["COM", []]]
+    total_orbit = {}
     while next_orbit:
-        current_orbit, current_size = next_orbit.pop()
+        current_orbit, current_parent = next_orbit.pop()
         if current_orbit in orbit_map:
             in_orbit = orbit_map[current_orbit]
-            next_orbit += [[o, current_size + 1] for o in in_orbit]
+            next_orbit += [[o, current_parent + [current_orbit]] for o in in_orbit]
+        total_orbit[current_orbit] = current_parent
 
-        orbit_size += current_size
-
-    return orbit_size
+    return sum([len(total_orbit[orbit]) for orbit in total_orbit])
 
 
 def get_solution(filename):
