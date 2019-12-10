@@ -1,71 +1,53 @@
+import operator
+
+
 def get_values(values, mode, params):
-    val = []
-    for m, p in zip(mode, params):
-        if m == 0:
-            val.append(values[p])
-        else:
-            val.append(p)
-    return val
+    return [values[p] if m == 0 else p for m, p in zip(mode, params)]
+
+
+def math_operation(p1, p2, op_func):
+    return int(op_func(p1, p2))
+
+
+def jump_operation(p, d, op_func, idx):
+    return d if op_func(p, 0) else idx + 3
 
 
 def run_test(values, input_code):
     idx = 0
     last_output = None
+
+    op_dict = {1: operator.add, 2: operator.mul, 7: operator.lt, 8: operator.eq}
+    jump_dict = {5: operator.ne, 6: operator.eq}
+
     while values[idx] != 99:
         code = values[idx]
         op = code % 100
         mode = code // 100
-
         mode = [mode // d % 10 for d in [1, 10, 100]]
 
-        if op == 1:
+        if op in op_dict:
+            op_func = op_dict[op]
             p1, p2, d = values[idx + 1:idx + 4]
             p1, p2 = get_values(values, mode, [p1, p2])
-            values[d] = p1 + p2
+            values[d] = math_operation(p1, p2, op_func)
             idx += 4
-        elif op == 2:
-            p1, p2, d = values[idx + 1:idx + 4]
-            p1, p2 = get_values(values, mode, [p1, p2])
-            values[d] = p1 * p2
-            idx += 4
+
+        if op in jump_dict:
+            jump_func = jump_dict[op]
+            p, d = values[idx + 1:idx + 3]
+            p, d = get_values(values, mode, [p, d])
+            idx = jump_operation(p, d, jump_func, idx)
+
         elif op == 3:
             d = values[idx + 1]
             values[d] = input_code
             idx += 2
+
         elif op == 4:
             s = values[idx + 1]
             last_output = values[s]
             idx += 2
-        elif op == 5:
-            p, d = values[idx + 1:idx + 3]
-            p, d = get_values(values, mode, [p, d])
-            if p != 0:
-                idx = d
-            else:
-                idx += 3
-        elif op == 6:
-            p, d = values[idx + 1:idx + 3]
-            p, d = get_values(values, mode, [p, d])
-            if p == 0:
-                idx = d
-            else:
-                idx += 3
-        elif op == 7:
-            p1, p2, d = values[idx + 1:idx + 4]
-            p1, p2 = get_values(values, mode, [p1, p2])
-            if p1 < p2:
-                values[d] = 1
-            else:
-                values[d] = 0
-            idx += 4
-        elif op == 8:
-            p1, p2, d = values[idx + 1:idx + 4]
-            p1, p2 = get_values(values, mode, [p1, p2])
-            if p1 == p2:
-                values[d] = 1
-            else:
-                values[d] = 0
-            idx += 4
 
     return last_output
 
