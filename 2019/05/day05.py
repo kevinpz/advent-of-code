@@ -13,6 +13,10 @@ def jump_operation(p, d, op_func, idx):
     return d if op_func(p, 0) else idx + 3
 
 
+def get_op_mode(code):
+    return code % 100, [code // 100 // d % 10 for d in [1, 10, 100]]
+
+
 def run_test(values, input_code):
     idx = 0
     last_output = None
@@ -21,22 +25,17 @@ def run_test(values, input_code):
     jump_dict = {5: operator.ne, 6: operator.eq}
 
     while values[idx] != 99:
-        code = values[idx]
-        op = code % 100
-        mode = code // 100
-        mode = [mode // d % 10 for d in [1, 10, 100]]
+        op, mode = get_op_mode(values[idx])
 
         if op in op_dict:
             op_func = op_dict[op]
-            p1, p2, d = values[idx + 1:idx + 4]
-            p1, p2 = get_values(values, mode, [p1, p2])
-            values[d] = math_operation(p1, p2, op_func)
+            p1, p2 = get_values(values, mode, values[idx + 1:idx + 3])
+            values[values[idx + 3]] = math_operation(p1, p2, op_func)
             idx += 4
 
         if op in jump_dict:
             jump_func = jump_dict[op]
-            p, d = values[idx + 1:idx + 3]
-            p, d = get_values(values, mode, [p, d])
+            p, d = get_values(values, mode, values[idx + 1:idx + 3])
             idx = jump_operation(p, d, jump_func, idx)
 
         elif op == 3:
