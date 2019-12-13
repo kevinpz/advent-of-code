@@ -5,42 +5,55 @@ class IntcodeComputer:
     _op_dict = {1: operator.add, 2: operator.mul, 7: operator.lt, 8: operator.eq}
     _jump_dict = {5: operator.ne, 6: operator.eq}
 
-    def __init__(self, values, input):
+    def __init__(self, values, input_int):
         self.idx = 0
-        self.values = values[:] + [0] * 6000
-        self.input_list = [input]
+        self.values = values[:]
+        self.input_list = [input_int]
         self.last_output = None
         self.base = 0
+
+    def _read(self, pos):
+        if len(self.values) > pos:
+            return self.values[pos]
+        return 0
+
+    def _write(self, pos, value):
+        if len(self.values) > pos:
+            self.values[pos] = value
+        else:
+            diff = pos - len(self.values)
+            self.values += [0] * diff
+            print(self.values)
 
     def _get_values(self, mode, nb):
         val = []
         for m, p in zip(mode, range(1, nb + 1)):
             if m == 0:
-                val.append(self.values[self.idx + p])
+                val.append(self._read(self.idx + p))
             elif m == 1:
                 val.append(self.idx + p)
             else:
-                val.append(self.values[self.idx + p] + self.base)
+                val.append(self._read(self.idx + p) + self.base)
         if nb == 1:
             return val[0]
         return val
 
     def _math_operation(self, p1, p2, op_func):
-        return int(op_func(self.values[p1], self.values[p2]))
+        return int(op_func(self._read(p1), self._read(p2)))
 
     def _jump_operation(self, p, d, op_func):
-        return self.values[d] if op_func(self.values[p], 0) else self.idx + 3
+        return self._read(d) if op_func(self._read(p), 0) else self.idx + 3
 
     def _get_op_mode(self, code):
         return code % 100, [code // d % 10 for d in [100, 1000, 10000]]
 
     def run_test(self):
-        while self.values[self.idx] != 99:
-            op, mode = self._get_op_mode(self.values[self.idx])
+        while self._read(self.idx) != 99:
+            op, mode = self._get_op_mode(self._read(self.idx))
 
             if op in self._op_dict:
                 p1, p2, d = self._get_values(mode, 3)
-                self.values[d] = self._math_operation(p1, p2, self._op_dict[op])
+                self._write(d, self._math_operation(p1, p2, self._op_dict[op]))
                 self.idx += 4
 
             elif op in self._jump_dict:
@@ -49,7 +62,7 @@ class IntcodeComputer:
 
             elif op == 3:
                 d = self._get_values(mode, 1)
-                self.values[d] = self.input_list.pop(0)
+                self._write(d, self.input_list.pop(0))
                 self.idx += 2
 
             elif op == 4:
@@ -59,7 +72,7 @@ class IntcodeComputer:
 
             elif op == 9:
                 b = self._get_values(mode, 1)
-                self.base += self.values[b]
+                self.base += self._read(b)
                 self.idx += 2
 
         return self.last_output
