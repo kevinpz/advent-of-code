@@ -1,5 +1,4 @@
 import operator
-from itertools import permutations
 
 
 class IntcodeComputer:
@@ -64,6 +63,7 @@ class IntcodeComputer:
                 self.idx += 2
 
         return self.last_output
+
 
 def get_solution(filename):
     with open(filename) as file:
