@@ -21,9 +21,9 @@ class IntcodeComputer:
         if len(self.values) > pos:
             self.values[pos] = value
         else:
-            diff = pos - len(self.values)
+            diff = pos - len(self.values) + 1
             self.values += [0] * diff
-            print(self.values)
+            self.values[pos] = value
 
     def _get_values(self, mode, nb):
         val = []
