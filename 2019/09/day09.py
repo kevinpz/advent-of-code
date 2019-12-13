@@ -18,12 +18,10 @@ class IntcodeComputer:
         return 0
 
     def _write(self, pos, value):
-        if len(self.values) > pos:
-            self.values[pos] = value
-        else:
+        if len(self.values) <= pos:
             diff = pos - len(self.values) + 1
             self.values += [0] * diff
-            self.values[pos] = value
+        self.values[pos] = value
 
     def _get_values(self, mode, nb):
         val = []
