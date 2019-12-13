@@ -65,7 +65,7 @@ class IntcodeComputer:
 
             elif op == 4:
                 s = self._get_values(mode, 1)
-                self.last_output = self.values[s]
+                self.last_output = self._read(s)
                 self.idx += 2
 
             elif op == 9:
